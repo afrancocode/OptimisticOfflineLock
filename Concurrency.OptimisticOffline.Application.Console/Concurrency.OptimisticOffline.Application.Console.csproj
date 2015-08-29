@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AA71315E-9A1E-4B1F-B80D-C09BD10D3E85}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Concurrency.OptimisticOffline.Application.Console</RootNamespace>
+    <AssemblyName>Concurrency.OptimisticOffline.Application.Console</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="OptimisticLockDemo.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Concurrency.OptimisticOffline.Infrastructure\Concurrency.OptimisticOffline.Infrastructure.csproj">
+      <Project>{7c55cf7a-7ab1-4109-a4c4-447678571a95}</Project>
+      <Name>Concurrency.OptimisticOffline.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Concurrency.OptimisticOffline.Model\Concurrency.OptimisticOffline.Model.csproj">
+      <Project>{3a0f0c52-f353-4f8f-b89c-4b1e94041ff0}</Project>
+      <Name>Concurrency.OptimisticOffline.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Concurrency.OptimisticOffline.Repository.Memory\Concurrency.OptimisticOffline.Repository.Memory.csproj">
+      <Project>{f26b1b04-2af1-4562-8a1b-2b6cf5d2448e}</Project>
+      <Name>Concurrency.OptimisticOffline.Repository.Memory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Concurrency.OptimisticOffline.Session\Concurrency.OptimisticOffline.Session.csproj">
+      <Project>{c5fdb444-929a-4523-b95b-b01c48728158}</Project>
+      <Name>Concurrency.OptimisticOffline.Session</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
