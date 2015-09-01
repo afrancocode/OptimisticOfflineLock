@@ -16,6 +16,8 @@ namespace Concurrency.OptimisticOffline.Infrastructure.Domain
 
 		public Guid Id { get; set; }
 
+		public DateTime Created { get; set; }
+		public string CreatedBy { get; set; }
 		public DateTime Modified { get { return this.modified; } }
 		public string ModifiedBy { get { return this.modifiedBy; } }
 		public int Version { get { return this.version; } }

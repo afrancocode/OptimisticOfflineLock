@@ -6,43 +6,108 @@ using System.Threading.Tasks;
 
 namespace Concurrency.OptimisticOffline.Repository.Memory.Data
 {
-	public class CustomerTable : ITable
+	public abstract class Table<TRecord> : ITable where TRecord : TableRecord
 	{
-		private static readonly CustomerTable table = new CustomerTable();
+		void ITable.Add(ITableRecord record)
+		{
+			Add((TRecord)record);
+		}
 
-		public static CustomerTable Table { get { return table; } }
+		int ITable.Update(ITableRecord record)
+		{
+			return Update(record.Id, (TRecord)record);
+		}
 
-		private List<CustomerRecord> records;
+		int ITable.Remove(ITableRecord record)
+		{
+			return Remove((TRecord)record);
+		}
 
+		IEnumerable<ITableRecord> ITable.GetAll()
+		{
+			return data;
+		}
+
+		private static readonly List<TRecord> data = new List<TRecord>();
+		private static bool initialized = false;
+		private static object _lock = new object();
+
+		protected static void Seed(Func<IEnumerable<TRecord>> GetSeed)
+		{
+			lock(_lock)
+			{
+				if (initialized) return;
+				foreach (var record in GetSeed())
+					data.Add (record);
+				initialized = true;
+			}
+		}
+
+		public IEnumerable<TRecord> GetAll()
+		{
+			return data;
+		}
+
+		public void Add(TRecord record)
+		{
+			lock(_lock)
+			{
+				data.Add(record);
+			}
+		}
+
+		public int Remove(TRecord record)
+		{
+			lock(_lock)
+			{
+				if (data.Remove(record))
+					return 1;
+				else
+					return 0;
+			}
+		}
+
+		public int Update(Guid id, TRecord record)
+		{
+			lock(_lock)
+			{
+				var target = data.Find(r => r.Id == id);
+				if (target == null) return 0;
+				UpdateSystem(record, target);
+				Update(record, target);
+				return 1;
+			}
+		}
+
+		private void UpdateSystem(TRecord source, TRecord target)
+		{
+			target.Created = source.Created;
+			target.CreatedBy = source.CreatedBy;
+			target.Modified = source.Modified;
+			target.ModifiedBy = source.ModifiedBy;
+			target.Version = source.Version;
+		}
+
+		protected abstract void Update(TRecord source, TRecord target);
+	}
+
+	public class CustomerTable : Table<CustomerRecord>
+	{
 		public CustomerTable()
 		{
-			this.records = new List<CustomerRecord>();
-			Seed();
+			Seed(SeedProvider);
 		}
 
-		public IEnumerable<ITableRecord> GetAll()
+		protected override void Update(CustomerRecord source, CustomerRecord target)
 		{
-			return this.records;
+			target.Created = source.Created;
+			target.Name = source.Name;
+			target.Address = source.Address;
 		}
 
-		public void Add(CustomerRecord record)
+		private IEnumerable<CustomerRecord> SeedProvider()
 		{
-			this.records.Add(record);
-		}
-
-		public int Update(ITableRecord record)
-		{
-			return 0;
-		}
-
-		public void Remove(Guid id)
-		{
-
-		}
-
-		private void Seed()
-		{
-			this.records.Add(new CustomerRecord()
+			yield return new CustomerRecord()
 			{
 				Id = new Guid("a004c037-294d-4796-b51b-070a4e832241"),
 				Name = "Alfonso",
@@ -52,9 +117,9 @@ namespace Concurrency.OptimisticOffline.Repository.Memory.Data
 				ModifiedBy = "sa",
 				Modified = DateTime.UtcNow.AddDays(-1),
 				Version = 1
-			});
+			};
 
-			this.records.Add(new CustomerRecord()
+			yield return new CustomerRecord()
 			{
 				Id = new Guid("2e610a6e-12bd-4413-8a10-d49a9bb70a9e"),
 				Name = "Zaid",
@@ -64,7 +129,7 @@ namespace Concurrency.OptimisticOffline.Repository.Memory.Data
 				ModifiedBy = "sa",
 				Modified = DateTime.UtcNow.AddDays(-1),
 				Version = 1
-			});
+			};
 		}
 	}
 }

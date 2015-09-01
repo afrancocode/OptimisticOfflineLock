@@ -9,14 +9,14 @@ using Concurrency.OptimisticOffline.Repository.Memory.Data;
 
 namespace Concurrency.OptimisticOffline.Repository.Memory.Mapper
 {
-	public abstract class BaseMapper
+	public abstract class BaseMapper<T, TRecord> where T : EntityBase where TRecord : class, ITableRecord
 	{
 		public BaseMapper() { }
 
-		public EntityBase Find(Guid id)
+		public T Find(Guid id)
 		{
 			var manager = SessionManager.GetManager();
-			var obj = manager.GetSession(manager.Current).GetIdentityMap().Get(id);
+			var obj = (T)manager.GetSession(manager.Current).GetIdentityMap().Get(id);
 			if (obj == null)
 			{
 				var record = ExecuteLoadQuery(id);
@@ -34,16 +34,16 @@ namespace Concurrency.OptimisticOffline.Repository.Memory.Mapper
 			return obj;
 		}
 
-		public IEnumerable<EntityBase> FindAll()
+		public IEnumerable<T> FindAll()
 		{
 			var manager = SessionManager.GetManager();
 			var table = GetTable();
 			foreach(var record in table.GetAll())
 			{
-				var obj = manager.GetSession(manager.Current).GetIdentityMap().Get(record.Id);
+				var obj = (T)manager.GetSession(manager.Current).GetIdentityMap().Get(record.Id);
 				if(obj == null)
 				{
-					obj = Load(record.Id, record);
+					obj = Load(record.Id, (TRecord)record);
 					obj.SetSystemFields(record.Modified, record.ModifiedBy, record.Version);
 					manager.GetSession(manager.Current).GetIdentityMap().Add(record.Id, obj);
 				}
@@ -51,21 +51,21 @@ namespace Concurrency.OptimisticOffline.Repository.Memory.Mapper
 			}
 		}
 
-		private ITableRecord ExecuteLoadQuery(Guid id)
+		private TRecord ExecuteLoadQuery(Guid id)
 		{
 			var table = GetTable();
 			foreach (var record in table.GetAll())
 			{
 				if (id == record.Id)
-					return record;
+					return (TRecord)record;
 			}
 			return null;
 		}
 
-		protected abstract EntityBase Load(Guid id, ITableRecord record);
+		protected abstract T Load(Guid id, TRecord record);
 		protected abstract ITable GetTable();
 
-		public void Update(EntityBase entity)
+		public void Update(T entity)
 		{
 			var manager = SessionManager.GetManager();
 			var table = GetTable();
@@ -74,6 +74,6 @@ namespace Concurrency.OptimisticOffline.Repository.Memory.Mapper
 			table.Update(record);
 		}
 
-		protected abstract ITableRecord Generate(EntityBase entity);
+		protected abstract TRecord Generate(T entity);
 	}
 }

@@ -9,8 +9,10 @@ namespace Concurrency.OptimisticOffline.Repository.Memory.Data
 	public abstract class TableRecord : ITableRecord
 	{
 		public Guid Id { get; set; }
-		public string ModifiedBy { get; set; }
+		public DateTime Created { get; set; }
+		public string CreatedBy { get; set; }
 		public DateTime Modified { get; set; }
+		public string ModifiedBy { get; set; }
 		public int Version { get; set; }
 	}
 
@@ -22,10 +24,7 @@ namespace Concurrency.OptimisticOffline.Repository.Memory.Data
 	public sealed class CustomerRecord : TableRecord
 	{
 		public CustomerRecord() { }
-
 		public string Name { get; set; }
 		public string Address { get; set; }
-		public string CreatedBy { get; set; }
-		public DateTime Created { get; set; }
 	}
 }

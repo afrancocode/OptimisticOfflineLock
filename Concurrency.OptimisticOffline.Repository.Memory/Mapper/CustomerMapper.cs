@@ -9,22 +9,37 @@ using Concurrency.OptimisticOffline.Repository.Memory.Data;
 
 namespace Concurrency.OptimisticOffline.Repository.Memory.Mapper
 {
-	public sealed class CustomerMapper : BaseMapper
+	public sealed class CustomerMapper : BaseMapper<Customer, CustomerRecord>
 	{
-		protected override EntityBase Load(Guid id, ITableRecord record)
+		private CustomerTable table;
+
+		public CustomerMapper()
 		{
-			var customerRecord = (CustomerRecord)record;
-			return Customer.Activate(id, customerRecord.Name, customerRecord.Address);
+			this.table = new CustomerTable();
+		}
+
+		protected override Customer Load(Guid id, CustomerRecord record)
+		{
+			return Customer.Activate(id, record.Name, record.Address);
 		}
 
 		protected override ITable GetTable()
 		{
-			return CustomerTable.Table;
+			return this.table;
 		}
 
-		protected override ITableRecord Generate(EntityBase entity)
+		protected override CustomerRecord Generate(Customer entity)
 		{
-			throw new NotImplementedException();
+			return new CustomerRecord()
+			{
+				Id = entity.Id,
+				Name = entity.Name,
+				Address = entity.Address,
+				Created = entity.Created,
+				CreatedBy = entity.CreatedBy,
+				Modified = entity.Modified,
+				ModifiedBy = entity.ModifiedBy
+			};
 		}
 	}
 }

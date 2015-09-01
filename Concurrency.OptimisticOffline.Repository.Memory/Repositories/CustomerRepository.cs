@@ -10,70 +10,49 @@ using Concurrency.OptimisticOffline.Repository.Memory.Mapper;
 
 namespace Concurrency.OptimisticOffline.Repository.Memory.Repositories
 {
-	public sealed class CustomerRepository : ICustomerRepository, IUnitOfWorkRepository
+	public sealed class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
 	{
-		private IUnitOfWork uow;
 		private CustomerMapper mapper;
 
 		public CustomerRepository(IUnitOfWork uow)
+			: base(uow)
 		{
-			this.uow = uow;
 			this.mapper = new CustomerMapper();
 		}
 
 		public Customer FindBy(string name)
 		{
-			Customer customer = null;
 			foreach(var item in mapper.FindAll())
 			{
-				customer = (Customer)item;
-				if (customer.Name == name)
-					return customer;
+				if (item.Name == name)
+					return item;
 			}
-			return customer;
+			return null;
 		}
 
-		public Customer FindBy(Guid id)
+		public override Customer FindBy(Guid id)
 		{
-			return (Customer)mapper.Find(id);
+			return mapper.Find(id);
 		}
 
-		public IEnumerable<Customer> FindAll()
+		public override IEnumerable<Customer> FindAll()
 		{
-			foreach(var item in mapper.FindAll())
-			{
-				yield return (Customer)item;
-			}
+			return mapper.FindAll();
 		}
 
-		public void Save(Customer entity)
+		protected override void PersistCreation(Customer entity)
 		{
-			this.uow.RegisterAmended(entity, this);
+			throw new NotImplementedException ();
 		}
 
-		public void Add(Customer entity)
+		protected override void PersistUpdate(Customer entity)
 		{
-			this.uow.RegisterNew(entity, this);
+			mapper.Update(entity);
 		}
 
-		public void Remove(Customer entity)
+		protected override void PersistDeletion(Customer entity)
 		{
-			this.uow.RegisterRemoved(entity, this);
-		}
-
-		void IUnitOfWorkRepository.PersistCreationOf(IAggregateRoot entity)
-		{
-			
-		}
-
-		void IUnitOfWorkRepository.PersistUpdateOf(IAggregateRoot entity)
-		{
-			throw new NotImplementedException();
-		}
-
-		void IUnitOfWorkRepository.PersistDeletionOf(IAggregateRoot entity)
-		{
-			throw new NotImplementedException();
+			throw new NotImplementedException ();
 		}
 	}
 }
