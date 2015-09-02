@@ -59,14 +59,13 @@ namespace Concurrency.OptimisticOffline.Repository.Sql.Mapper
 
 			var sets = new Dictionary<string, string>();
 			var whereSet = new Dictionary<string, string>();
-			int index = 0;
 
 			foreach (var column in table.Columns)
 			{
 				if (CanUpdate(column))
-					sets.Add(column.Name, GetValue(column, false));
+					sets.Add(column.Name, GetValue(column, true));
 				if (IsWhere(column))
-					whereSet.Add(column.Name, GetValue(column, true));
+					whereSet.Add(column.Name, GetValue(column, false));
 			}
 
 			var setInfo = new StringBuilder();
@@ -205,23 +204,16 @@ namespace Concurrency.OptimisticOffline.Repository.Sql.Mapper
 			SqlConnection conn = null;
 			try
 			{
-				int oldVersion = entity.Version;
-				entity.SetSystemFields(DateTime.UtcNow, entity.ModifiedBy, entity.Version + 1);
 				conn = (SqlConnection)session.DbInfo.Connection;
 				using (var command = conn.CreateCommand())
 				{
 					command.CommandType = CommandType.Text;
-					command.CommandText = CRUDBase.GetUpdateQuery(table, CanUpdate, IsWhere, 
-						(cd, isWhere) =>
-							{
-								if (cd.Name == SystemColumns.Version && isWhere)
-									return oldVersion.GetSqlSyntax();
-								return GetValue(entity, cd);
-							});
+					command.CommandText = CRUDBase.GetUpdateQuery(table, CanUpdate, IsWhere, (column, isUpdate) => GetValue(entity, column, isUpdate));
 					command.Transaction = (SqlTransaction)session.DbInfo.Transaction;
 					var rows = command.ExecuteNonQuery();
 					if (rows == 0)
 						ThrowConcurrencyException(entity);
+					entity.SetSystemFields(DateTime.UtcNow, entity.ModifiedBy, entity.Version + 1);
 				}
 			}
 			catch (SqlException e)
@@ -242,25 +234,31 @@ namespace Concurrency.OptimisticOffline.Repository.Sql.Mapper
 			return (name == SystemColumns.Id || name == SystemColumns.Version);
 		}
 
-		private string GetValue(T entity, IColumnDefinition definition)
+		private string GetValue(T entity, IColumnDefinition definition, bool isUpdate)
 		{
-			var value = GetSystemValue(entity, definition);
+			var value = GetSystemValue(entity, definition, isUpdate);
 			if (value == null)
-				value = GetEntityValue(entity, definition);
+				value = GetEntityValue(entity, definition, isUpdate);
 			return value;
 		}
 
-		private string GetSystemValue(T entity, IColumnDefinition definition)
+		private string GetSystemValue(T entity, IColumnDefinition definition, bool isUpdate)
 		{
-			if (definition.Name == SystemColumns.Id) return entity.Id.GetSqlSyntax();
-			else if (definition.Name == SystemColumns.Created) return entity.Created.GetSqlSyntax();
-			else if (definition.Name == SystemColumns.CreatedBy) return entity.CreatedBy.GetSqlSyntax();
-			else if (definition.Name == SystemColumns.Modified) return entity.Modified.GetSqlSyntax();
-			else if (definition.Name == SystemColumns.ModifiedBy) return entity.ModifiedBy.GetSqlSyntax();
-			else if (definition.Name == SystemColumns.Version) return entity.Version.GetSqlSyntax();
+			var name = definition.Name;
+			if (name == SystemColumns.Id) return entity.Id.GetSqlSyntax();
+			else if (name == SystemColumns.Created) return entity.Created.GetSqlSyntax();
+			else if (name == SystemColumns.CreatedBy) return entity.CreatedBy.GetSqlSyntax();
+			else if (name == SystemColumns.Modified) return entity.Modified.GetSqlSyntax();
+			else if (name == SystemColumns.ModifiedBy) return entity.ModifiedBy.GetSqlSyntax();
+			else if (name == SystemColumns.Version)
+			{
+				if (isUpdate)
+					return name + " + 1";
+				return entity.Version.GetSqlSyntax();
+			}
 			return null;
 		}
 
-		protected abstract string GetEntityValue(T entity, IColumnDefinition definition, bool forWhere = false);
+		protected abstract string GetEntityValue(T entity, IColumnDefinition definition, bool isUpdate);
 	}
 }

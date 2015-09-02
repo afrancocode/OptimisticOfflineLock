@@ -23,7 +23,7 @@ namespace Concurrency.OptimisticOffline.Repository.Sql.Mapper
 			return Customer.Activate(id, name, createdBy, created);
 		}
 
-		protected override string GetEntityValue(Customer entity, IColumnDefinition definition, bool forWhere = false)
+		protected override string GetEntityValue(Customer entity, IColumnDefinition definition, bool isUpdate)
 		{
 			if (definition.Name == "Name")
 				return entity.Name.GetSqlSyntax();
