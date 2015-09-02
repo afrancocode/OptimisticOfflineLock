@@ -11,6 +11,21 @@
     <AssemblyName>Concurrency.OptimisticOffline.Application.Console</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -57,14 +72,40 @@
       <Project>{3a0f0c52-f353-4f8f-b89c-4b1e94041ff0}</Project>
       <Name>Concurrency.OptimisticOffline.Model</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Concurrency.OptimisticOffline.Repository.Memory\Concurrency.OptimisticOffline.Repository.Memory.csproj">
-      <Project>{f26b1b04-2af1-4562-8a1b-2b6cf5d2448e}</Project>
-      <Name>Concurrency.OptimisticOffline.Repository.Memory</Name>
+    <ProjectReference Include="..\Concurrency.OptimisticOffline.Repository.Sql\Concurrency.OptimisticOffline.Repository.Sql.csproj">
+      <Project>{3afc0f97-7af9-4dfb-8c62-bbc605185649}</Project>
+      <Name>Concurrency.OptimisticOffline.Repository.Sql</Name>
     </ProjectReference>
     <ProjectReference Include="..\Concurrency.OptimisticOffline.Session\Concurrency.OptimisticOffline.Session.csproj">
       <Project>{c5fdb444-929a-4523-b95b-b01c48728158}</Project>
       <Name>Concurrency.OptimisticOffline.Session</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Data\MSSQL\OptimisticDb.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\MSSQL\OptimisticDb_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>OptimisticDb.mdf</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

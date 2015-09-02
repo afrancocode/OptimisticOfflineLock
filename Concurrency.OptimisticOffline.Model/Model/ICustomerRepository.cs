@@ -10,6 +10,6 @@ namespace Concurrency.OptimisticOffline.Model.Model
 {
 	public interface ICustomerRepository : IRepository<Customer>
 	{
-		Customer FindBy(string name);
+
 	}
 }

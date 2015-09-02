@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Concurrency.OptimisticOffline.Repository.Memory")]
+[assembly: AssemblyTitle("Concurrency.OptimisticOffline.Repository.Sql")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Concurrency.OptimisticOffline.Repository.Memory")]
+[assembly: AssemblyProduct("Concurrency.OptimisticOffline.Repository.Sql")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("80b016e8-6524-430f-a6ba-a6ac7ee8e433")]
+[assembly: Guid("cc2c8767-3a07-44fa-b71b-cf9f3f1f57ca")]
 
 // Version information for an assembly consists of the following four values:
 //

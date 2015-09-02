@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F26B1B04-2AF1-4562-8A1B-2B6CF5D2448E}</ProjectGuid>
+    <ProjectGuid>{3AFC0F97-7AF9-4DFB-8C62-BBC605185649}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Concurrency.OptimisticOffline.Repository.Memory</RootNamespace>
-    <AssemblyName>Concurrency.OptimisticOffline.Repository.Memory</AssemblyName>
+    <RootNamespace>Concurrency.OptimisticOffline.Repository.Sql</RootNamespace>
+    <AssemblyName>Concurrency.OptimisticOffline.Repository.Sql</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -39,15 +39,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\CustomerRecord.cs" />
-    <Compile Include="Data\CustomerTable.cs" />
-    <Compile Include="Data\ITable.cs" />
-    <Compile Include="Data\ITableRecord.cs" />
-    <Compile Include="Mapper\BaseMapper.cs" />
+    <Compile Include="Data\DataDefinition.cs" />
+    <Compile Include="Data\ITableDefinition.cs" />
+    <Compile Include="Data\IColumnDefinition.cs" />
+    <Compile Include="Data\SystemColumns.cs" />
     <Compile Include="Mapper\CustomerMapper.cs" />
+    <Compile Include="Mapper\BaseMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\BaseRepository.cs" />
     <Compile Include="Repositories\CustomerRepository.cs" />
+    <Compile Include="Repositories\Repository.cs" />
     <Compile Include="UnitOfWork\UnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>

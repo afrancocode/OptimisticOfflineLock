@@ -6,17 +6,16 @@ using System.Threading.Tasks;
 using Concurrency.OptimisticOffline.Infrastructure;
 using System.Diagnostics;
 
-namespace Concurrency.OptimisticOffline.Application.Console
+namespace Concurrency.OptimisticOffline.Session
 {
 	public sealed class SessionManager : ISessionManager
 	{
 		private static readonly ISessionManager manager = new SessionManager();
+		private static readonly string SQL_CONNECTION = @"Data Source=(LocalDB)\v11.0;AttachDbFilename=D:\GitHub\OptimisticOfflineLock\Concurrency.OptimisticOffline.Application.Console\Data\MSSQL\OptimisticDb.mdf;Integrated Security=True;Connect Timeout=30";
 
-		public static ISessionManager GetManager()
-		{
-			return manager;
-		}
+		public static ISessionManager Manager { get { return manager; } }
 
+		private string connectionInfo;
 		private Dictionary<Guid, ISession> sessions;
 
 		private SessionManager()
@@ -30,7 +29,7 @@ namespace Concurrency.OptimisticOffline.Application.Console
 
 		public Guid Open()
 		{
-			var session = new Session();
+			var session = new Session(SQL_CONNECTION);
 			this.sessions.Add(session.Id, session);
 			return session.Id;
 		}

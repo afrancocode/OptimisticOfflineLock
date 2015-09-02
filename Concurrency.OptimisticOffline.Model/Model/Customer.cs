@@ -15,11 +15,10 @@ namespace Concurrency.OptimisticOffline.Model.Model
 		}
 
 		public string Name { get; set; }
-		public string Address { get; set; }
 
-		public static Customer Activate(Guid id, string name, string address)
+		public static Customer Activate(Guid id, string name, string createdBy, DateTime created)
 		{
-			return new Customer() { Id = id, Name = name, Address = address };
+			return new Customer() { Id = id, Name = name, Created = created, CreatedBy = createdBy };
 		}
 	}
 }
